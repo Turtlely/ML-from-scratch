@@ -1,15 +1,24 @@
 import numpy as np
 
+# Random seed
 np.random.seed(42)
 
+# 784 inputs and 10 layers
+num_Layers = 5
+input_dim = 3
+structure = [input_dim,num_Layers]
 
-structure = [784,10]
-
+# Sigmoid function for activation
 def sigmoid(x):
     return 1/(1+np.exp(-1*x))
 
+# Derivative of sigmoid function
 def sigmoid_derivative(x):
     return x * (1-x)
+
+# MSE Cost function, y is predicted and y0 is real
+def cost(y,y0):
+    return 0.5*(y0-y)**2
 
 class Network:
     # Initialize the network
@@ -54,40 +63,29 @@ class Network:
 
 n = Network(structure)
 
-#print(n.get_params())
+n.get_params()
 
-input_array = np.random.randn(784)
+input_array = np.random.randn(input_dim)
 
 y_true = np.random.randn(10)
+print("Input")
+print(input_array)
+print("Bias Matrix")
+print(n.bias)
+print()
+print("Weight Matrix")
+print(n.weights)
 
-n_epochs = 100
-learning_rate = 0.001
+# Forward Propogation
 
-# Feedforward propagation
-y_pred, node_states = n.predict(input_array)
+# Compute weighted inputs for each layer
 
-# Calculate the error
-total_error = 0.5*((y_pred - y_true)**2).sum()/len(y_pred)
+# Start with input
+print("Output of first layer")
+#weighted_input_layer=np.array([n.compute(i,input_array)] for i in range(num_Layers))
 
-# Loop through each node of the last layer
-for node in range(structure[-1]):
-    # Backpropagation
-    node_del = -1 * (y_true[node]-y_pred[node]) * y_pred[node] * (1 - y_pred[node])
+print(n.compute(1,input_array))
 
-    # Loop through each node of the next layer. this is to get the output of these nodes and update the connecting weight
-    for node_n in range(structure[-2]):
-        # Derivative of total error with respect to the output of a certain node
-        dE_dwn = n.node_states[-2][node_n]  * node_del
-
-        # Calculate weight adjustment per weight
-        update = learning_rate * dE_dwn
-
-        # Update weights as such
-        n.weights[-1][node][0,node_n] -= update
-
-        print(n.weights[-1][node][0,node_n])
-
-# Update hidden layer next
+print()
 
 
-# Update weight for neuron in layer "x" number "n"
